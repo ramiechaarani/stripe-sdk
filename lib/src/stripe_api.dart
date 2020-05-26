@@ -64,6 +64,37 @@ class StripeApi {
         params: data);
   }
 
+  /// Retrieve a Plan with a given ID
+  /// https://stripe.com/docs/api/plans/retrieve
+  Future<Map<String, dynamic>> retrievePlanMethod(
+      Map<String, dynamic> data,
+      String planID) async {
+    final path = "/plans/$planID";
+    return _apiHandler.request(
+        RequestMethod.get, path, publishableKey, apiVersion,
+        params: data);
+  }
+
+  /// Create a Customer.
+  /// https://stripe.com/docs/api/customers/create
+  Future<Map<String, dynamic>> createCustomerMethod(
+      Map<String, dynamic> data) async {
+    final path = "/customers";
+    return _apiHandler.request(
+        RequestMethod.post, path, publishableKey, apiVersion,
+        params: data);
+  }
+
+  /// Create a Charge.
+  /// https://stripe.com/docs/api/charges/create
+  Future<Map<String, dynamic>> createChargeMethod(
+      Map<String, dynamic> data) async {
+    final path = "/charges";
+    return _apiHandler.request(
+        RequestMethod.post, path, publishableKey, apiVersion,
+        params: data);
+  }
+
   /// Create a PaymentMethod.
   /// https://stripe.com/docs/api/payment_methods/create
   Future<Map<String, dynamic>> createPaymentMethod(
@@ -72,6 +103,76 @@ class StripeApi {
     return _apiHandler.request(
         RequestMethod.post, path, publishableKey, apiVersion,
         params: data);
+  }
+
+  /// Create Card for Customer
+  /// https://stripe.com/docs/api/cards/create
+  Future<Map<String, dynamic>> createPaymentMethodForCustomer(
+      String customerId,
+      Map<String, dynamic> data) async {
+    final path = "/customers/${customerId}/sources";
+    return _apiHandler.request(
+        RequestMethod.post, path, publishableKey, apiVersion,
+        params: data);
+  }
+
+  /// List Cards for Customer
+  /// https://stripe.com/docs/api/cards/create
+  Future<Map<String, dynamic>> listPaymentMethodsForCustomer(
+      String customerId,
+      Map<String, dynamic> data) async {
+    final path = "/customers/${customerId}/sources";
+    return _apiHandler.request(
+        RequestMethod.get, path, publishableKey, apiVersion,
+        params: data);
+  }
+
+  /// List Cards for Customer
+  /// https://stripe.com/docs/api/cards/create
+  Future<Map<String, dynamic>> deletePaymentMethodsForCustomer(
+      String customerId,
+      String cardId,
+      Map<String, dynamic> data) async {
+    final path = '/customers/${customerId}/sources/${cardId}';
+    return _apiHandler.request(
+        RequestMethod.delete, path, publishableKey, apiVersion,
+        params: data);
+  }
+
+  Future<Map<String, dynamic>> createPaymentMethodForCustomerFromCard(
+      String customerId,
+      StripeCard card) async {
+    return createPaymentMethodForCustomer(customerId, card.toPaymentMethod());
+  }
+
+  /// Create Subscription for Customer
+  /// https://stripe.com/docs/api/subscriptions/create
+  Future<Map<String, dynamic>> createSubscriptionMethodForCustomer(
+      Map<String, dynamic> data) async {
+    final path = "/subscriptions";
+    return _apiHandler.request(
+        RequestMethod.post, path, publishableKey, apiVersion,
+        params: data);
+  }
+
+  /// Retrieve Subscription for Customer
+  /// https://stripe.com/docs/api/subscriptions/create
+  Future<Map<String, dynamic>> retrieveSubscriptionsMethod(
+      Map<String, dynamic> data) async {
+    final path = "/subscriptions";
+    return _apiHandler.request(
+        RequestMethod.get, path, publishableKey, apiVersion,
+        params: data);
+  }
+
+  /// Cancel Subscription for Customer
+  /// https://stripe.com/docs/api/subscriptions/create
+  Future<Map<String, dynamic>> cancelSubscriptionMethod(
+      String subscriptionID, Map<String, dynamic> data) async {
+    final path = "/subscriptions/${subscriptionID}";
+    return _apiHandler.request(
+        RequestMethod.delete, path, publishableKey, apiVersion,
+        params: null);
   }
 
   Future<Map<String, dynamic>> createPaymentMethodFromCard(
@@ -138,12 +239,12 @@ class StripeApi {
           "For more info, see https://stripe.com/docs/stripe.js.");
     }
 
-    if (publishableKey.startsWith("sk_")) {
-      throw Exception("Invalid Publishable Key: " +
-          "You are using a secret key to create a token, " +
-          "instead of the publishable one. For more info, " +
-          "see https://stripe.com/docs/stripe.js");
-    }
+//    if (publishableKey.startsWith("sk_")) {
+//      throw Exception("Invalid Publishable Key: " +
+//          "You are using a secret key to create a token, " +
+//          "instead of the publishable one. For more info, " +
+//          "see https://stripe.com/docs/stripe.js");
+//    }
   }
 }
 
